@@ -22,6 +22,9 @@ RUN apk-install -t build-deps wget ca-certificates gpgme \
   && apk del --purge build-deps
 
 ENV STACK 5.0.1
+WORKDIR /usr/share/elasticsearch
+
+bin/plugin install license
 
 RUN apk-install libzmq bash nodejs supervisor nginx apache2-utils openssl
 RUN mkdir -p /usr/local/lib \
@@ -107,6 +110,8 @@ COPY entrypoints/elastic-entrypoint.sh /
 COPY entrypoints/logstash-entrypoint.sh /
 COPY entrypoints/kibana-entrypoint.sh /
 COPY entrypoints/nginx-entrypoint.sh /
+
+RUN bin/elasticsearch-plugin install x-pack
 
 VOLUME ["/usr/share/elasticsearch/data"]
 VOLUME ["/etc/logstash/conf.d"]
